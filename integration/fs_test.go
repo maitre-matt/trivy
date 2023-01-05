@@ -28,6 +28,7 @@ func TestFilesystem(t *testing.T) {
 		helmValuesFile []string
 		skipFiles      []string
 		skipDirs       []string
+		format         string
 	}
 	tests := []struct {
 		name   string
@@ -254,6 +255,14 @@ func TestFilesystem(t *testing.T) {
 			},
 			golden: "testdata/secrets.json.golden",
 		},
+		{
+			name: "conda",
+			args: args{
+				format: "cyclonedx"
+				input:  "testdata/fixtures/fs/conda",
+			},
+			golden: "testdata/conda.json.golden",
+		},
 	}
 
 	// Set up testing DB
@@ -266,7 +275,17 @@ func TestFilesystem(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			osArgs := []string{
 				"-q", "--cache-dir", cacheDir, "fs", "--skip-db-update", "--skip-policy-update",
-				"--format", "json", "--offline-scan", "--security-checks", tt.args.securityChecks,
+				"--offline-scan",
+			}
+
+			if tt.args.format != "" {
+				osArgs = append(osArgs, "--format", tt.args.format)
+			} else {
+				osArgs = append(osArgs, "--format", "json")
+			}
+
+			if tt.args.securityChecks != "" {
+				osArgs = append(osArgs, "--security-checks", tt.args.securityChecks)
 			}
 
 			if len(tt.args.policyPaths) != 0 {
