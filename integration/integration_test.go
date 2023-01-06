@@ -122,24 +122,7 @@ func readReport(t *testing.T, filePath string) types.Report {
 	return report
 }
 
-func execute(osArgs []string) error {
-	// Setup CLI App
-	app := commands.NewApp("dev")
-	app.SetOut(io.Discard)
-
-	// Run Trivy
-	app.SetArgs(osArgs)
-	return app.Execute()
-}
-
-func compareReports(t *testing.T, wantFile, gotFile string) {
-	want := readReport(t, wantFile)
-	got := readReport(t, gotFile)
-	assert.Equal(t, want, got)
-}
-
-// TODO: refactor compareCycloneDX + readCycloneDX, update sbom_test
-func decodeCycloneDX(t *testing.T, filePath string) *cdx.BOM {
+func readCycloneDX(t *testing.T, filePath string) *cdx.BOM {
 	f, err := os.Open(filePath)
 	require.NoError(t, err)
 	defer f.Close()
@@ -162,4 +145,26 @@ func decodeCycloneDX(t *testing.T, filePath string) *cdx.BOM {
 	}
 
 	return bom
+}
+
+func execute(osArgs []string) error {
+	// Setup CLI App
+	app := commands.NewApp("dev")
+	app.SetOut(io.Discard)
+
+	// Run Trivy
+	app.SetArgs(osArgs)
+	return app.Execute()
+}
+
+func compareReports(t *testing.T, wantFile, gotFile string) {
+	want := readReport(t, wantFile)
+	got := readReport(t, gotFile)
+	assert.Equal(t, want, got)
+}
+
+func compareCycloneDX(t *testing.T, wantFile, gotFile string) {
+	want := readCycloneDX(t, wantFile)
+	got := readCycloneDX(t, gotFile)
+	assert.Equal(t, want, got)
 }

@@ -145,7 +145,7 @@ var (
 	}
 
 	// TypeIndividualPkgs has all analyzers for individual packages
-	TypeIndividualPkgs = []Type{TypeGemSpec, TypeNodePkg, TypePythonPkg, TypeGoBinary, TypeJar, TypeRustBinary} // BUGBUG: include TypeCondaPkg?
+	TypeIndividualPkgs = []Type{TypeGemSpec, TypeNodePkg, TypeCondaPkg, TypePythonPkg, TypeGoBinary, TypeJar, TypeRustBinary}
 
 	// TypeConfigFiles has all config file analyzers
 	TypeConfigFiles = []Type{TypeYaml, TypeJSON, TypeDockerfile, TypeTerraform, TypeCloudFormation, TypeHelm}

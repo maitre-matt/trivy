@@ -28,6 +28,7 @@ func TestFilesystem(t *testing.T) {
 		helmValuesFile []string
 		skipFiles      []string
 		skipDirs       []string
+		command        string
 		format         string
 	}
 	tests := []struct {
@@ -258,8 +259,9 @@ func TestFilesystem(t *testing.T) {
 		{
 			name: "conda",
 			args: args{
-				format: "cyclonedx",
-				input:  "testdata/fixtures/fs/conda",
+				command: "rootfs",
+				format:  "cyclonedx",
+				input:   "testdata/fixtures/fs/conda",
 			},
 			golden: "testdata/conda.json.golden",
 		},
@@ -273,15 +275,20 @@ func TestFilesystem(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			osArgs := []string{
-				"-q", "--cache-dir", cacheDir, "fs", "--skip-db-update", "--skip-policy-update",
-				"--offline-scan",
+
+			command := "fs"
+			if tt.args.command != "" {
+				command = tt.args.command
 			}
 
+			format := "json"
 			if tt.args.format != "" {
-				osArgs = append(osArgs, "--format", tt.args.format)
-			} else {
-				osArgs = append(osArgs, "--format", "json")
+				format = tt.args.format
+			}
+
+			osArgs := []string{
+				"-q", "--cache-dir", cacheDir, command, "--skip-db-update", "--skip-policy-update",
+				"--format", format, "--offline-scan",
 			}
 
 			if tt.args.securityChecks != "" {
@@ -363,15 +370,13 @@ func TestFilesystem(t *testing.T) {
 			require.NoError(t, err)
 
 			// Compare want and got
-
-			// Compare want and got
-			switch tt.args.format {
+			switch format {
 			case "cyclonedx":
-				want := decodeCycloneDX(t, tt.golden)
-				got := decodeCycloneDX(t, outputFile)
-				assert.Equal(t, want, got)
-			default:
+				compareCycloneDX(t, tt.golden, outputFile)
+			case "json":
 				compareReports(t, tt.golden, outputFile)
+			default:
+				require.Fail(t, "invalid format", "format: %s", format)
 			}
 		})
 	}

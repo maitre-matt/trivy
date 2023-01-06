@@ -126,9 +126,7 @@ func TestSBOM(t *testing.T) {
 			// Compare want and got
 			switch tt.args.format {
 			case "cyclonedx":
-				want := decodeCycloneDX(t, tt.golden)
-				got := decodeCycloneDX(t, outputFile)
-				assert.Equal(t, want, got)
+				compareCycloneDX(t, tt.golden, outputFile)
 			case "json":
 				compareSBOMReports(t, tt.golden, outputFile, tt.override)
 			default:
