@@ -1,2 +1,81 @@
 {
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.4",
+  "serialNumber": "urn:uuid:0f2cf07e-c37c-4132-a867-3973f98687ad",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2023-01-05T20:30:11+00:00",
+    "tools": [
+      {
+        "vendor": "aquasecurity",
+        "name": "trivy",
+        "version": "dev"
+      }
+    ],
+    "component": {
+      "bom-ref": "c7278e6f-3509-4fa9-bbdd-eb44d2bf674a",
+      "type": "application",
+      "name": "testdata/fixtures/fs/conda",
+      "properties": [
+        {
+          "name": "aquasecurity:trivy:SchemaVersion",
+          "value": "2"
+        }
+      ]
+    }
+  },
+  "components": [
+    {
+      "bom-ref": "pkg:conda-pkg/pip@22.2.2?file_path=miniconda3%2Fenvs%2Ftestenv%2Fconda-meta%2Fpip-22.2.2-py38h06a4308_0.json",
+      "type": "library",
+      "name": "pip",
+      "version": "22.2.2",
+      "licenses": [
+        {
+          "expression": "MIT"
+        }
+      ],
+      "purl": "pkg:conda-pkg/pip@22.2.2",
+      "properties": [
+        {
+          "name": "aquasecurity:trivy:PkgType",
+          "value": "conda-pkg"
+        },
+        {
+          "name": "aquasecurity:trivy:FilePath",
+          "value": "miniconda3/envs/testenv/conda-meta/pip-22.2.2-py38h06a4308_0.json"
+        }
+      ]
+    },
+    {
+      "bom-ref": "5e78b129-09a2-430d-b307-becc17cd4ac9",
+      "type": "application",
+      "name": "miniconda3/envs/testenv/conda-meta/pip-22.2.2-py38h06a4308_0.json",
+      "properties": [
+        {
+          "name": "aquasecurity:trivy:Type",
+          "value": "conda-pkg"
+        },
+        {
+          "name": "aquasecurity:trivy:Class",
+          "value": "lang-pkgs"
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "ref": "5e78b129-09a2-430d-b307-becc17cd4ac9",
+      "dependsOn": [
+        "pkg:conda-pkg/pip@22.2.2?file_path=miniconda3%2Fenvs%2Ftestenv%2Fconda-meta%2Fpip-22.2.2-py38h06a4308_0.json"
+      ]
+    },
+    {
+      "ref": "c7278e6f-3509-4fa9-bbdd-eb44d2bf674a",
+      "dependsOn": [
+        "5e78b129-09a2-430d-b307-becc17cd4ac9"
+      ]
+    }
+  ],
+  "vulnerabilities": []
 }

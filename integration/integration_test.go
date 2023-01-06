@@ -14,6 +14,7 @@ import (
 	"testing"
 	"time"
 
+	cdx "github.com/CycloneDX/cyclonedx-go"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -135,4 +136,30 @@ func compareReports(t *testing.T, wantFile, gotFile string) {
 	want := readReport(t, wantFile)
 	got := readReport(t, gotFile)
 	assert.Equal(t, want, got)
+}
+
+// TODO: refactor compareCycloneDX + readCycloneDX, update sbom_test
+func decodeCycloneDX(t *testing.T, filePath string) *cdx.BOM {
+	f, err := os.Open(filePath)
+	require.NoError(t, err)
+	defer f.Close()
+
+	bom := cdx.NewBOM()
+	decoder := cdx.NewBOMDecoder(f, cdx.BOMFileFormatJSON)
+	err = decoder.Decode(bom)
+	require.NoError(t, err)
+
+	// We don't compare values which change each time an SBOM is generated
+	bom.Metadata.Timestamp = ""
+	bom.Metadata.Component.BOMRef = ""
+	bom.SerialNumber = ""
+	for i := range *bom.Components {
+		(*bom.Components)[i].BOMRef = ""
+	}
+	for j := range *bom.Dependencies {
+		(*bom.Dependencies)[j].Ref = ""
+		(*bom.Dependencies)[j].Dependencies = nil
+	}
+
+	return bom
 }

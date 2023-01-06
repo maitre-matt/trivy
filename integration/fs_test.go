@@ -258,7 +258,7 @@ func TestFilesystem(t *testing.T) {
 		{
 			name: "conda",
 			args: args{
-				format: "cyclonedx"
+				format: "cyclonedx",
 				input:  "testdata/fixtures/fs/conda",
 			},
 			golden: "testdata/conda.json.golden",
@@ -363,7 +363,16 @@ func TestFilesystem(t *testing.T) {
 			require.NoError(t, err)
 
 			// Compare want and got
-			compareReports(t, tt.golden, outputFile)
+
+			// Compare want and got
+			switch tt.args.format {
+			case "cyclonedx":
+				want := decodeCycloneDX(t, tt.golden)
+				got := decodeCycloneDX(t, outputFile)
+				assert.Equal(t, want, got)
+			default:
+				compareReports(t, tt.golden, outputFile)
+			}
 		})
 	}
 }
